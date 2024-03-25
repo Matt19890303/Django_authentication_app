@@ -1,0 +1,126 @@
+Heroku - Hosting Postgresql DB 
+        heroku:
+        mattfourie3@gmail.com
+        C~f.3K@w2sU*E-
+
+Retool - displaying data from DB
+Bootstrap - Docs
+Django Docs - https://docs.djangoproject.com/en/4.0/topics/auth/default/
+Tutorial - https://www.youtube.com/watch?v=WuyKxdLcw3w
+
+            ⭐️ Timestamps ⭐️
+            00:00:00 | Video Overview
+            00:01:04 | Retool
+            00:02:16 | Project Demo
+            00:03:58 | Django Setup & Installation
+            00:11:22 | Writing HTML Templates
+            00:21:54 | Remote Postgres Database Setup
+            00:28:20 | Retool Dashboard Setup
+            00:33:18 | Django User Registration & Sign In
+            01:00:48 | Creating Posts
+            01:13:28 | Viewing Posts
+            01:18:09 | Deleting Posts
+            01:25:55 | Groups and User Permissions
+            01:58:34 | Banning Users
+            02:09:28 | User Stats and Dashboard
+
+
+
+Posts:
+    Create a Post model with all the details needed to capture a post in model.py
+    Create a Post form with a title and description in forms.py
+    Create a create_post.htmlfile with the form and a submit button (copied from login.html)
+    Create a view.py file and add the create_post function
+
+
+Viewing Posts:
+    On the home page we want to view all the Posts
+    in view.py import Post from .models
+    create a post object
+    Update the home.html page to display the posts there (in home.html create a card for each post)
+
+
+Deleting a Post:
+    Inside the Buttons div in the home.html file 
+    If the user is equal to the post.author
+    Create a form inside if statement with a method = "POST"
+    Inside form - a csrf_token, create a button
+    Inside button class have value = "{{post.id}}" - which helps identify which post to delete by highlighting the current post its in
+    Also add a name for the post.id - name = "post-id" in the button class so when button is clicked it calls that name
+
+    Then inside views.py and in the home function add an if statement
+    If request.method is equal to "POST" then post_id = request.POST.get('post_id') to get the posts id
+    Then check if the user owns the post by filtering by ID and grabbing the first element that - post = Post.objects.filter(id=post_id).first
+    Then check if the post exists - post and post.author == request.user:
+    Delete post - post.delete()
+
+
+Groups and User Permissions:
+    Mod user - Can delete posts but cant ban users
+    Default user - Can make posts and delete their own posts
+    Superuser/Admin - Can delete posts and ban users
+
+    first lets create a Superuser/Admin:
+        python manage.py createsuperuser
+        "
+        Username: admin
+        Email address: <EMAIL>
+        Password: <PASSWORD>
+        Confirm password: <PASSWORD>
+        "
+    Can create groups from the /admin panel and assign users to those groups - 
+        but by default django does not automatically denied users from specific tasks 
+        - this must be coded out.
+    
+    Creating a group and add a user to that group from shell:
+        So in terminal - python3 manage.py shell
+        (InteractiveConsole):
+        >>> from django.contrib.auth.models import Group, Permission, User
+        >>> from django.contrib.contenttypes.models import ContentType
+        >>> mod, created = Group.objects.get_or_create(name='Mod')
+        >>> mod - will go into that group called mod
+        <Group: mod>
+        >>> created - check it has been created
+        True
+        >>> mod.permissions.add(Permission.objects.get(codename='delete_post'))
+        >>> mod.permissions - shows permissions in that group.
+        >>> user = User.objects.filter(username='tim')
+        >>> user - access this user
+        <QuerySet [<User: tim>]> mod.user_set.add(user.first())
+        >>> quit()
+
+    Restricting Page access:
+    Under @login_required restrictor in views.py - add @permission_required('main.add_post') name of the permission in brackets
+    Add a condition to def home(request) function - if post and (post.author == request.user or request.user.has_perm('main.delete_post')): - If user thepermission to delete post, allow it
+    And amend home.html - {% if user == post.author or perms.main.delete_post %}
+
+
+Banning Users:
+    Inside the home.html file - create an if statement to check if user has the permissions to ban users
+    Inside the if statement - create a form with a method = "POST" with the same submit button as before - "<form method="post">{% csrf_token %}<button type="submit" class="btn btn-danger" name="user-id" value="{{post.author.id}}">Ban User</button></form>"
+    In views.py inside the if statement for posts add another elsif to check for user id and is_superuser - if post_id and elif user_id
+    In that elif statement and filter user_id - user = User.objects.filter(id=user_id).first()
+    Check if is_superuser - if user and request.user.is_superuser:
+    Then bann from groups - group = Group.objects.filter(name='Default'), group.user_set.remove(user)
+
+
+Adding new Users: (Automatically adding them to Default Group)
+    In apps.py and in the MainConfig class
+    Create a method/function to add a user to the Default Group
+    Add a connector once the usermodel/object is created and saved it calls the function to add them to the Default group
+
+
+User Stats and Dashboard:
+    Using Retool to get some User Stats
+
+
+Add a users link to list of users on admin panel:
+    - in the navbar have a all users tab that shows all users
+        show all users but exclude Superuser/admin user on this list
+    - ban users buttons on this page 
+    - and view all posts of selected user
+        have the selected user name at the top of posts
+    - have a 'are you sure you want to ban user' message
+
+
+Add an Update button to edit posts:

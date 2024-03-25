@@ -21,20 +21,36 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/create-post">Post</a>
                     </li>
+                    {% if request.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user-list">All Users</a> 
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 
             <div>
                 <!-- Right side of navbar -->
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
+                    <!-- Display login user -->
+                    {% if user.is_authenticated %}
+                        <!-- To display name of user -->
+                        <span class="navbar-text">Logged in as {{user.username}} | </span>
+                        <li class="nav-item">
+                            <!-- To display logout -->
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 
         </div>
     </nav>
+
     <!-- Block for my Content -->
     <div class="container">
         {% block content %}

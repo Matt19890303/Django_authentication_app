@@ -1,6 +1,6 @@
 {% extends "main/base.html" %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %}Create a Post{% endblock %}
 
 {% load crispy_forms_tags %}
 
@@ -10,8 +10,7 @@
         <!-- a form provided by django -->
         <!-- csrf_token is a security feature -->
         {% csrf_token %}{{form|crispy}}
-        <p>Have an account? Login <a href="/login">Here</a>!</p>
-        <button type="submit" class="btn btn-success">Register</button>
+        <button type="submit" class="btn btn-success">Post</button>
     </form>
 
 {% endblock %}

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,6 +78,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'user_auth.wsgi.application'
 
 
@@ -89,8 +92,17 @@ DATABASES = {
         'USER': 'u8ugtnbbrt7l0e',
         'PASSWORD': 'p8f28e96599f75b00de1e817357797e4ecb82da9ab430759b2c625f6713a3ee5e',
         'HOST': 'cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'PORT': '5432'
     }
+}
+
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
 }
 
 

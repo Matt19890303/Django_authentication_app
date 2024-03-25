@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    <form method="'post">
+    <form method="post">
         <!-- a form provided by django -->
         <!-- csrf_token is a security feature -->
         {% csrf_token %}{{form|crispy}}
